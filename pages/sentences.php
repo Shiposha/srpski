@@ -1,0 +1,538 @@
+<section id="sentences" class="page active">
+    <h2>Изучение предложений</h2>
+    <p>Добавляйте новые предложения для изучения. Заполните поля и нажмите "Добавить предложение".</p>
+    
+    <form class="sentence-form" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="page" value="sentences">
+        
+        <div class="form-with-keyboard">
+            <!-- Компактная клавиатура слева -->
+            <div class="serbian-keyboard-compact">
+                <h4>Сербские символы</h4>
+                <div class="keyboard-grid-compact">
+                    <button type="button" class="keyboard-key-tiny" data-latin="č" data-cyrillic="ч">č</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="ć" data-cyrillic="ћ">ć</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="ž" data-cyrillic="ж">ž</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="š" data-cyrillic="ш">š</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="đ" data-cyrillic="ђ">đ</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="dž" data-cyrillic="џ">dž</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="lj" data-cyrillic="љ">lj</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="nj" data-cyrillic="њ">nj</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Č" data-cyrillic="Ч">Č</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Ć" data-cyrillic="Ћ">Ć</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Ž" data-cyrillic="Ж">Ž</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Š" data-cyrillic="Ш">Š</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Đ" data-cyrillic="Ђ">Đ</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Dž" data-cyrillic="Џ">Dž</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Lj" data-cyrillic="Љ">Lj</button>
+                    <button type="button" class="keyboard-key-tiny" data-latin="Nj" data-cyrillic="Њ">Nj</button>
+                </div>
+            </div>
+            
+            <!-- Основные поля формы -->
+            <div class="form-fields-main">
+                <!-- Поля ввода предложений друг под другом -->
+                <div class="form-fields-stacked">
+                    <div class="form-group">
+                        <label for="sentence-latin">Сербский (латиница):</label>
+                        <input type="text" id="sentence-latin" name="sentence_latin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sentence-cyrillic">Сербский (кириллица):</label>
+                        <input type="text" id="sentence-cyrillic" name="sentence_cyrillic" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sentence-russian">Русский перевод:</label>
+                        <input type="text" id="sentence-russian" name="sentence_russian" required>
+                    </div>
+                </div>
+                
+                <!-- Кнопки под полями ввода -->
+                <div class="form-buttons-row">
+                    <div class="audio-upload-compact">
+                        <div class="file-input-wrapper">
+                            <div class="file-input-button">Выбрать аудиофайл</div>
+                            <input type="file" id="sentence-audio-file" name="sentence_audio_file" accept=".mp3,audio/mpeg">
+                            <span id="sentence-file-name" class="file-name"></span>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="translate-sentence-btn" class="translate-btn-compact" title="Автоматический перевод">
+                        🌐 Переводчик
+                    </button>
+                </div>
+                
+                <button type="submit" name="add_sentence" class="primary-btn">Добавить предложение</button>
+            </div>
+        </div>
+    </form>
+    
+    <h3>Ваши предложения</h3>
+    <div class="table-container">
+        <table class="sentence-table">
+            <thead>
+                <tr>
+                    <th>Сербский (латиница)</th>
+                    <th>Сербский (кириллица)</th>
+                    <th>Русский перевод</th>
+                    <th>Аудио</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody id="sentence-list">
+                <?php if (!empty($sentences)): ?>
+                    <?php foreach ($sentences as $sentence): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($sentence['latin'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($sentence['cyrillic'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($sentence['russian'] ?? '') ?></td>
+                        <td class="audio-cell">
+                            <?php if (!empty($sentence['audio_path'])): ?>
+                                <button class="play-btn" data-audio="<?= htmlspecialchars($sentence['audio_path']) ?>">▶</button>
+                            <?php else: ?>
+                                <button class="add-audio-btn secondary-btn small-btn" 
+                                        data-sentence-id="<?= $sentence['id'] ?>" 
+                                        data-action="add-sentence-audio">
+                                    +
+                                </button>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <a href="?page=sentences&delete_sentence=<?= $sentence['id'] ?>" class="delete-btn" onclick="return confirm('Вы уверены, что хотите удалить это предложение?')">Удалить</a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px;">
+                            У вас пока нет добавленных предложений.
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Автоматическая транслитерация между латиницей и кириллицей
+    const latinInput = document.getElementById('sentence-latin');
+    const cyrillicInput = document.getElementById('sentence-cyrillic');
+    const russianInput = document.getElementById('sentence-russian');
+    const translateBtn = document.getElementById('translate-sentence-btn');
+    
+    // Виртуальная клавиатура
+    const keyboardKeys = document.querySelectorAll('.keyboard-key-tiny');
+    
+    // Функция для вставки текста в позицию курсора
+    function insertAtCursor(input, text) {
+        if (!input) return;
+        
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        
+        input.value = input.value.substring(0, start) + text + input.value.substring(end);
+        
+        // Устанавливаем курсор после вставленного текста
+        input.selectionStart = input.selectionEnd = start + text.length;
+        input.focus();
+        
+        // Триггерим событие input для автоматической транслитерации
+        const event = new Event('input', { bubbles: true });
+        input.dispatchEvent(event);
+    }
+    
+    // Обработчики для виртуальной клавиатуры
+    keyboardKeys.forEach(key => {
+        key.addEventListener('click', function() {
+            const latinChar = this.dataset.latin;
+            const cyrillicChar = this.dataset.cyrillic;
+            
+            if (!latinChar || !cyrillicChar) return;
+            
+            // Определяем активное поле
+            const activeElement = document.activeElement;
+            
+            if (activeElement === latinInput) {
+                insertAtCursor(latinInput, latinChar);
+            } else if (activeElement === cyrillicInput) {
+                insertAtCursor(cyrillicInput, cyrillicChar);
+            } else if (activeElement === russianInput) {
+                insertAtCursor(russianInput, cyrillicChar);
+            } else {
+                // Если ни одно поле не активно, вставляем в латинское
+                insertAtCursor(latinInput, latinChar);
+            }
+        });
+    });
+    
+    // Функции транслитерации
+    function convertLatinToCyrillic(text) {
+        if (!text) return '';
+        
+        let result = text.replace(/Lj/g, 'Љ').replace(/lj/g, 'љ')
+                         .replace(/Nj/g, 'Њ').replace(/nj/g, 'њ')
+                         .replace(/Dž/g, 'Џ').replace(/dž/g, 'џ')
+                         .replace(/Đ/g, 'Ђ').replace(/đ/g, 'ђ')
+                         .replace(/Ć/g, 'Ћ').replace(/ć/g, 'ћ')
+                         .replace(/Č/g, 'Ч').replace(/č/g, 'ч')
+                         .replace(/Ž/g, 'Ж').replace(/ž/g, 'ж')
+                         .replace(/Š/g, 'Ш').replace(/š/g, 'ш');
+        
+        const latinToCyrillicMap = {
+            'a': 'а', 'b': 'б', 'v': 'в', 'g': 'г', 'd': 'д', 'e': 'е', 'z': 'з', 'i': 'и', 'j': 'ј', 
+            'k': 'к', 'l': 'л', 'm': 'м', 'n': 'н', 'o': 'о', 'p': 'п', 'r': 'р', 's': 'с', 't': 'т', 
+            'u': 'у', 'f': 'ф', 'h': 'х', 'c': 'ц',
+            'A': 'А', 'B': 'Б', 'V': 'В', 'G': 'Г', 'D': 'Д', 'E': 'Е', 'Z': 'З', 'I': 'И', 'J': 'Ј', 
+            'K': 'К', 'L': 'Л', 'M': 'М', 'N': 'Н', 'O': 'О', 'P': 'П', 'R': 'Р', 'S': 'С', 'T': 'Т', 
+            'U': 'У', 'F': 'Ф', 'H': 'Х', 'C': 'Ц'
+        };
+        
+        return result.split('').map(char => latinToCyrillicMap[char] || char).join('');
+    }
+
+    function convertCyrillicToLatin(text) {
+        if (!text) return '';
+        
+        let result = text.replace(/Љ/g, 'Lj').replace(/љ/g, 'lj')
+                         .replace(/Њ/g, 'Nj').replace(/њ/g, 'nj')
+                         .replace(/Џ/g, 'Dž').replace(/џ/g, 'dž')
+                         .replace(/Ђ/g, 'Đ').replace(/ђ/g, 'đ')
+                         .replace(/Ћ/g, 'Ć').replace(/ћ/g, 'ć')
+                         .replace(/Ч/g, 'Č').replace(/ч/g, 'č')
+                         .replace(/Ж/g, 'Ž').replace(/ж/g, 'ž')
+                         .replace(/Ш/g, 'Š').replace(/ш/g, 'š');
+        
+        const cyrillicToLatinMap = {
+            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'з': 'z', 'и': 'i', 'ј': 'j', 
+            'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 
+            'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'c',
+            'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'З': 'Z', 'И': 'I', 'Ј': 'J', 
+            'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 
+            'У': 'U', 'Ф': 'F', 'Х': 'H', 'Ц': 'C'
+        };
+        
+        return result.split('').map(char => cyrillicToLatinMap[char] || char).join('');
+    }
+    
+    // Обработчики событий для автоматической транслитерации
+    let isConverting = false;
+    
+    if (latinInput) {
+        latinInput.addEventListener('input', function() {
+            if (isConverting || !cyrillicInput) return;
+            isConverting = true;
+            cyrillicInput.value = convertLatinToCyrillic(this.value);
+            isConverting = false;
+        });
+    }
+    
+    if (cyrillicInput) {
+        cyrillicInput.addEventListener('input', function() {
+            if (isConverting || !latinInput) return;
+            isConverting = true;
+            latinInput.value = convertCyrillicToLatin(this.value);
+            isConverting = false;
+        });
+    }
+    
+    // Функция для автоматического перевода
+    if (translateBtn) {
+        translateBtn.addEventListener('click', async function() {
+            const serbianText = (latinInput?.value.trim() || cyrillicInput?.value.trim()) || '';
+            const russianText = russianInput?.value.trim() || '';
+            
+            // Определяем направление перевода
+            let translationDirection;
+            let sourceText, sourceLang, targetLang;
+            
+            if (serbianText && !russianText) {
+                // Перевод с сербского на русский
+                translationDirection = 'sr-ru';
+                sourceText = serbianText;
+                sourceLang = 'sr';
+                targetLang = 'ru';
+            } else if (russianText && !serbianText) {
+                // Перевод с русского на сербский
+                translationDirection = 'ru-sr';
+                sourceText = russianText;
+                sourceLang = 'ru';
+                targetLang = 'sr';
+            } else if (serbianText && russianText) {
+                // Если оба поля заполнены, спрашиваем пользователя
+                const userChoice = confirm('Оба поля заполнены. Хотите перевести с сербского на русский? (OK - да, Отмена - перевести с русского на сербский)');
+                if (userChoice) {
+                    translationDirection = 'sr-ru';
+                    sourceText = serbianText;
+                    sourceLang = 'sr';
+                    targetLang = 'ru';
+                } else {
+                    translationDirection = 'ru-sr';
+                    sourceText = russianText;
+                    sourceLang = 'ru';
+                    targetLang = 'sr';
+                }
+            } else {
+                showNotification('Введите предложение для перевода', 'error');
+                return;
+            }
+            
+            // Показываем индикатор загрузки
+            translateBtn.disabled = true;
+            translateBtn.classList.add('loading');
+            translateBtn.innerHTML = '<span class="loading-spinner"></span> Перевод...';
+            
+            try {
+                const response = await fetch('https://translate.svhip.com/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        q: sourceText,
+                        source: sourceLang,
+                        target: targetLang,
+                        format: 'text'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data && data.translatedText) {
+                    if (translationDirection === 'sr-ru') {
+                        // Заполняем русское поле
+                        if (russianInput) {
+                            russianInput.value = data.translatedText;
+                        }
+                        showNotification('Перевод с сербского выполнен успешно!', 'success');
+                    } else {
+                        // Заполняем сербские поля
+                        const serbianTranslation = data.translatedText;
+                        if (latinInput) {
+                            latinInput.value = serbianTranslation;
+                        }
+                        if (cyrillicInput) {
+                            cyrillicInput.value = convertLatinToCyrillic(serbianTranslation);
+                        }
+                        showNotification('Перевод с русского выполнен успешно!', 'success');
+                    }
+                } else {
+                    throw new Error('Некорректный ответ от переводчика');
+                }
+                
+            } catch (error) {
+                console.error('Translation error:', error);
+                showNotification('Ошибка перевода: ' + error.message, 'error');
+            } finally {
+                // Восстанавливаем кнопку
+                translateBtn.disabled = false;
+                translateBtn.classList.remove('loading');
+                translateBtn.innerHTML = '🌐 Переводчик';
+            }
+        });
+    }
+    
+    // Обработчик для выбора аудиофайла
+    const audioFileInput = document.getElementById('sentence-audio-file');
+    const fileNameSpan = document.getElementById('sentence-file-name');
+    
+    if (audioFileInput && fileNameSpan) {
+        audioFileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const fileName = this.files[0].name;
+                fileNameSpan.textContent = `Выбрано: ${fileName}`;
+                fileNameSpan.style.display = 'inline-block';
+            } else {
+                fileNameSpan.textContent = '';
+                fileNameSpan.style.display = 'none';
+            }
+        });
+    }
+    
+    // Обработчик для кнопок добавления аудио к существующим предложениям (исправлено как в words.php)
+    document.querySelectorAll('.add-audio-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const sentenceId = this.dataset.sentenceId;
+            const sentenceRow = this.closest('tr');
+            const latinText = sentenceRow.querySelector('td:first-child').textContent.trim();
+            
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.mp3,audio/mpeg';
+            fileInput.style.display = 'none';
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const file = this.files[0];
+                    
+                    // Показываем индикатор загрузки
+                    const originalButton = button;
+                    originalButton.disabled = true;
+                    originalButton.textContent = '...';
+                    
+                    // Создаем FormData для отправки файла
+                    const formData = new FormData();
+                    formData.append('audio_file', file);
+                    formData.append('sentence_id', sentenceId);
+                    
+                    // Отправляем запрос на сервер
+                    fetch('/handlers/add-sentence-audio-handler.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Обновляем интерфейс
+                            const audioCell = originalButton.closest('.audio-cell');
+                            audioCell.innerHTML = `<button class="play-btn" data-audio="${data.audio_path}">▶</button>`;
+                            
+                            // Инициализируем новую кнопку воспроизведения
+                            const newPlayBtn = audioCell.querySelector('.play-btn');
+                            if (newPlayBtn) {
+                                newPlayBtn.addEventListener('click', function() {
+                                    const audioPath = this.dataset.audio;
+                                    if (typeof playAudio === 'function') {
+                                        playAudio(audioPath, this);
+                                    } else {
+                                        const audio = new Audio(audioPath);
+                                        audio.play().catch(error => {
+                                            console.error('Error playing audio:', error);
+                                            showNotification('Ошибка воспроизведения аудио', 'error');
+                                        });
+                                    }
+                                });
+                            }
+                            
+                            // Показываем уведомление
+                            showNotification('Аудиофайл успешно добавлен к предложению "' + latinText + '"', 'success');
+                        } else {
+                            throw new Error(data.error || 'Неизвестная ошибка сервера');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Ошибка при добавлении аудиофайла: ' + error.message, 'error');
+                        
+                        // Восстанавливаем кнопку
+                        originalButton.disabled = false;
+                        originalButton.textContent = '+';
+                    });
+                }
+            });
+            
+            document.body.appendChild(fileInput);
+            fileInput.click();
+            document.body.removeChild(fileInput);
+        });
+    });
+    
+    // Функция для показа уведомлений
+    function showNotification(message, type = 'info') {
+        // Удаляем существующие уведомления
+        const existingNotifications = document.querySelectorAll('.custom-notification');
+        existingNotifications.forEach(notification => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        });
+        
+        const notification = document.createElement('div');
+        notification.className = 'custom-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        `;
+        
+        if (type === 'success') {
+            notification.style.backgroundColor = '#28a745';
+        } else if (type === 'error') {
+            notification.style.backgroundColor = '#dc3545';
+        } else {
+            notification.style.backgroundColor = '#17a2b8';
+        }
+        
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Автоматически удаляем уведомление через 5 секунд
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }
+        }, 5000);
+    }
+
+    // CSS анимации для уведомлений
+    if (!document.querySelector('#notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'notification-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .loading-spinner {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border: 2px solid #ffffff;
+                border-radius: 50%;
+                border-top-color: transparent;
+                animation: spin 1s ease-in-out infinite;
+                margin-right: 8px;
+            }
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+});
+
+// Функция для инициализации аудиоплееров (должна быть определена в основном скрипте)
+function initializeAudioPlayers() {
+    document.querySelectorAll('.play-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const audioPath = this.dataset.audio;
+            if (audioPath) {
+                const audio = new Audio(audioPath);
+                audio.play().catch(e => console.error('Error playing audio:', e));
+            }
+        });
+    });
+}
+
+// Инициализируем аудиоплееры при загрузке
+initializeAudioPlayers();
+</script>
