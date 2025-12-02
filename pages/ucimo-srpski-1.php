@@ -1,4 +1,4 @@
-<section id="ucimo-srpski-1" class="page active">
+<!-- <section id="ucimo-srpski-1" class="page active"> -->
     <!-- Аудиоплеер для уроков - КОМПАКТНАЯ ВЕРСИЯ -->
     <div class="audio-player-section compact">
         <div class="audio-controls-compact">
@@ -27,7 +27,7 @@
     </div>
 
     <!-- PDF просмотрщик -->
-    <div class="pdf-viewer-section">
+    <!-- <div class="pdf-viewer-section"> -->
         <div class="pdf-container">
             <embed src="uploads/docs/ucimo_srpski_1/Učimo srpski 1.pdf" 
                    type="application/pdf" 
@@ -36,7 +36,7 @@
                 <p>Если PDF не отображается, вы можете <a href="uploads/docs/ucimo_srpski_1/Učimo srpski 1.pdf" target="_blank">скачать файл</a>.</p>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
     
     <!-- Кнопка просмотра PDF словаря -->
     <h3>Словарь "Учим Сербский 1"</h3>
@@ -50,6 +50,6 @@
             ⬇️ Скачать PDF
         </a>
     </div> 
-</section>
+<!-- </section> -->
 
 <script src="assets/js/ios-pdf-notice.js"></script>

@@ -1,4 +1,4 @@
-<section id="ucimo-srpski-2" class="page active">
+<!-- <section id="ucimo-srpski-2" class="page active"> -->
     <!-- Аудиоплеер для уроков - КОМПАКТНАЯ ВЕРСИЯ -->
     <div class="audio-player-section compact">
         <div class="audio-controls-compact">
@@ -27,7 +27,7 @@
     </div>
 
     <!-- PDF просмотрщик -->
-    <div class="pdf-viewer-section">
+    <!-- <div class="pdf-viewer-section"> -->
         <div class="pdf-container">
             <embed src="uploads/docs/ucimo_srpski_2/Učimo srpski 2.pdf" 
                    type="application/pdf" 
@@ -38,7 +38,7 @@
                 <p>Если PDF не отображается, вы можете <a href="uploads/docs/ucimo_srpski_2/Učimo srpski 2.pdf" target="_blank">скачать файл</a>.</p>
             </div>
         </div>
-    </div>
-</section>
+    <!-- </div> -->
+<!-- </section> -->
 
 <script src="assets/js/ios-pdf-notice.js"></script>

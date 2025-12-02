@@ -1,4 +1,4 @@
-<section id="ucimo-srpski-notebook" class="page active">
+<!-- <section id="ucimo-srpski-notebook" class="page active"> -->
     <h2>Учебная тетрадь</h2>
     
     <div class="pdf-container">
@@ -9,6 +9,6 @@
             </a>
         </iframe>
     </div>
-</section>
+<!-- </section> -->
 
 <script src="/assets/js/ios-pdf-notice.js"></script>
